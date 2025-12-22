@@ -1,45 +1,72 @@
 ## Elyra
 
-Elyra is an open-source project that enables data scientists to create complex pipelines visually 💛 Elyra supports rapid prototyping and experimentation, allowing users to leverage existing Jupyter notebooks and run them as a pipeline which simplifies the pipeline development process A LOT.
+Elyra는 데이터 사이언티스트가 **복잡한 파이프라인을 시각적으로 구성**할 수 있도록 도와주는 오픈소스 프로젝트입니다 💛  
+Elyra는 빠른 프로토타이핑과 실험을 지원하며,  
+기존의 Jupyter Notebook을 그대로 활용해 **파이프라인으로 실행**할 수 있기 때문에  
+파이프라인 개발 과정을 **매우 간단하게** 만들어 줍니다.
 
-Now we’ll take the notebooks from the previous exercises and use Elyra to turn them into a streamlined pipeline!
+이제 이전 실습에서 사용했던 노트북들을 Elyra를 활용해  
+하나의 정리된 파이프라인으로 만들어 보겠습니다!
 
-1. Go back to your Workbench, and open up the file `jukebox/2-dev_datascience/4-train_save_model.pipeline`. Notice that the file has a `*.pipeline` extension, this is how Elyra saves the pipeline definition. 
+1. 워크벤치로 돌아가서  
+   `jukebox/2-dev_datascience/4-train_save_model.pipeline` 파일을 엽니다.  
+   파일 확장자가 `*.pipeline` 인 것을 확인할 수 있는데,  
+   이것이 Elyra가 파이프라인 정의를 저장하는 방식입니다.
 
-    You'll see two notebooks connected with a line. First one builds the model and the second one saves it to `models` bucket. The line indicates that the second one only runs if the first one is successful. These notebooks are the ones we went through in the previous exercise.
+    두 개의 노트북이 선으로 연결되어 있는 것을 볼 수 있습니다.  
+    첫 번째 노트북은 모델을 학습하고, 두 번째 노트북은 학습된 모델을 `models` 버킷에 저장합니다.  
+    이 선은 **첫 번째 노트북이 성공적으로 실행되었을 때만**  
+    두 번째 노트북이 실행된다는 의미입니다.  
+    이 노트북들은 이전 실습에서 이미 실행해 보았던 것들입니다.
 
     ![elyra.png](./images/elyra.png)
 
-    Let's add a third one as an example.
+    이제 예제로 하나를 더 추가해 보겠습니다.
 
-2. While you are in the folder `2-dev_datascience`, on the left menu (File Browser), right click on an empty space and select `New Notebook`, keep the kernel selection as it is and click `Select`. It creates `Untitled.ipynb`. 
+2. `2-dev_datascience` 폴더에 있는 상태에서  
+   왼쪽 메뉴(File Browser)의 빈 공간에서 마우스 오른쪽 버튼을 클릭하고  
+   `New Notebook`을 선택합니다.  
+   커널 선택은 그대로 두고 `Select`를 클릭하면  
+   `Untitled.ipynb` 노트북이 생성됩니다.
 
-3. Copy the code block below and paste it into the newly created Notebook. (or feel free to get creative :D)
+3. 아래 코드 블록을 복사해 새로 생성한 노트북에 붙여넣습니다.  
+   (원하신다면 자유롭게 다른 코드를 작성해도 됩니다 :D)
 
     ```python
     print("Pipeline has finished successfully! Yayy!! ✨")
     ```
 
-    Hit Save! (or CTRL+S) and if you like, rename the Notebook to something like `4-reporting.ipynb`
+    `Save` 버튼을 누르거나 `CTRL + S`로 저장한 뒤,  
+    원한다면 노트북 이름을 `4-reporting.ipynb` 와 같이 변경합니다.
 
     ![elyra-2.png](./images/elyra-2.png)
 
-
-4. Then drag that Notebook and drop it into `4-train_save_model.pipeline` file. Connect the `2-save_model.ipynb` and your new `4-reporting.ipynb`. This will make the reporting run after saving the model. Lastly, make sure you hit **save** to store the changes.
+4. 이제 해당 노트북을 드래그하여  
+   `4-train_save_model.pipeline` 파일로 끌어다 놓습니다.  
+   그리고 `2-save_model.ipynb` 와 새로 만든 `4-reporting.ipynb` 를 연결합니다.  
+   이렇게 하면 **모델 저장이 완료된 이후에 리포팅 단계가 실행**됩니다.  
+   마지막으로 변경 사항을 저장하기 위해 **Save** 버튼을 꼭 눌러주세요.
 
     ![elyra-3.png](./images/drag-drop-elyra.gif)
 
-
-5. Let's run the pipeline! Hit `Run Pipeline` and click `OK` It might take some time to initiate the pipeline.
+5. 이제 파이프라인을 실행해 보겠습니다!  
+   `Run Pipeline`을 클릭한 뒤 `OK`를 누르세요.  
+   파이프라인이 초기화되는 데 약간의 시간이 걸릴 수 있습니다.
 
     ![elyra-4.png](./images/elyra-4.png)
 
-6. When it is triggered successfully, you'll get the below output. Click `Run Details` to follow the steps and see the pipeline outputs. It will take you to OpenShift AI's Pipeline view.
+6. 파이프라인이 성공적으로 트리거되면 아래와 같은 화면이 나타납니다.  
+   `Run Details`를 클릭하면 각 단계의 실행 과정과 결과를 확인할 수 있으며,  
+   OpenShift AI의 Pipeline 화면으로 이동합니다.
 
     ![elyra-5.png](./images/elyra-5.png)
 
-7. You'll see everything green when the pipeline runs successfully :)
+7. 파이프라인이 정상적으로 완료되면  
+   모든 단계가 초록색으로 표시되는 것을 확인할 수 있습니다 🙂
 
     ![elyra-6.png](./images/elyra-6.png)
 
-    As you experienced, Elyra is pretty straightforward and easy to set up! It is great to start with, however when we need more complex pipelines, it's better to transition to a tool like KFP that has more advanced features. 
+    직접 사용해 보셨듯이, Elyra는 설정이 매우 간단하고 사용하기 쉽습니다.  
+    파이프라인을 처음 시작하기에 좋은 도구이지만,  
+    더 복잡한 파이프라인이 필요해질 경우에는  
+    보다 고급 기능을 제공하는 **KFP(Kubeflow Pipelines)** 와 같은 도구로 전환하는 것이 좋습니다.

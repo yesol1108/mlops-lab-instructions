@@ -1,30 +1,58 @@
 ## Kubeflow Pipelines (KFP)
 
-Kubeflow Pipelines (KFP) is a platform designed for building and deploying portable, scalable machine learning pipelines using containers (and no, it's not related to Kung Fu Panda 🐼). KFP provides advanced capabilities such as versioning, metadata tracking, and resource management, which enable teams to monitor and optimize their pipelines efficiently—features that we currently lack in Elyra.
+Kubeflow Pipelines(KFP)는 컨테이너를 사용해 **이식 가능하고 확장 가능한 머신러닝 파이프라인을 구축하고 배포**하기 위해 설계된 플랫폼입니다  
+(아니요, 쿵푸 팬더 🐼 와는 관련 없습니다).  
+KFP는 **버저닝, 메타데이터 추적, 리소스 관리**와 같은 고급 기능을 제공하며,  
+이를 통해 팀이 파이프라인을 효율적으로 모니터링하고 최적화할 수 있습니다.  
+이러한 기능들은 현재 Elyra에서는 제공되지 않는 부분이기도 합니다.
 
-While Elyra was great for quick experimentation, KFP offers the robustness we need for running pipelines continuously. With KFP, we can have better logging, error handling, retry logic, and other production-level features. Essentially, this will become our production-grade training pipeline. And it will be automatically triggered based on source code updates, the arrival of new data, or alerts signaling unusual model behavior. (spoiler, spoiler🤭🤭)
+Elyra가 빠른 실험과 프로토타이핑에 적합했다면,  
+KFP는 파이프라인을 **지속적으로 실행하기 위한 견고함**을 제공합니다.  
+KFP를 사용하면 더 나은 로깅, 오류 처리, 재시도 로직 등  
+프로덕션 수준의 기능들을 활용할 수 있습니다.  
+즉, 이것이 우리의 **프로덕션 등급 트레이닝 파이프라인**이 됩니다.  
 
-The pipeline steps look like this:  
+또한 소스 코드 변경, 새로운 데이터 유입,  
+혹은 모델의 이상 동작을 알리는 알림에 따라  
+이 파이프라인이 **자동으로 트리거**되도록 구성할 수 있습니다.  
+(스포일러, 스포일러 🤭🤭)
+
+파이프라인의 단계는 다음과 같습니다.  
 ![pipeline-steps.png](./images/pipeline-steps.png)
 
-1. First we gather some data that we would like to train our model on.
-2. Then we both validate and preprocess the data. They are done in parallel but if the validation step fails, the pipeline will stop.  
-The pre-processing step makes sure that everything is converted to numbers and that our data is normalized, just like we did in the inner loop.
-3. Once we have our data ready, we can train the model.
-4. After the model is trained, we will evaluate the model to make sure its performance is good enough.  
-We also convert the model to ONNX at the same time, as that's the format we will go with for serving the model.
-5. After obtaining the ONNX model, we ensure that it performs the same as the original Keras model by running the test data through the ONNX model.
-6. And finally, we can save the model by storing it somewhere our model server can reach it. 🎉
+1. 먼저 모델 학습에 사용할 데이터를 수집합니다.
+2. 이후 데이터를 **검증(validation)** 하고 **전처리(preprocessing)** 합니다.  
+   이 두 단계는 병렬로 수행되지만, 검증 단계가 실패하면 파이프라인은 중단됩니다.  
+   전처리 단계에서는 이너 루프에서 했던 것처럼  
+   모든 데이터를 숫자로 변환하고 정규화합니다.
+3. 데이터 준비가 완료되면 모델을 학습합니다.
+4. 모델 학습이 끝난 후, 성능이 충분히 좋은지 평가합니다.  
+   이와 동시에 모델을 ONNX 형식으로 변환합니다.  
+   이는 모델 서빙에 사용할 형식이기 때문입니다.
+5. ONNX 모델이 생성되면, 테스트 데이터를 사용해  
+   원본 Keras 모델과 동일한 성능을 내는지 검증합니다.
+6. 마지막으로, 모델 서버가 접근할 수 있는 위치에  
+   모델을 저장함으로써 파이프라인을 마무리합니다. 🎉
 
-Now that you know what the pipeline is supposed to do, let's go ahead and run it! 🏃‍♂️
+이제 파이프라인이 어떤 역할을 하는지 이해했으니,  
+직접 실행해 보겠습니다! 🏃‍♂️
 
-1. You can find the pipeline definition in the `3-prod_datascience` folder.
+1. 파이프라인 정의 파일은 `3-prod_datascience` 폴더에 있습니다.
 
-    If you explore the files in this folder, you'll notice that they largely mirror the steps we previously executed in our notebooks. However, these steps have been broken down into individual functions and organized into separate files to improve modularity. This makes the pipeline easier to update and maintain over time.
+    이 폴더의 파일들을 살펴보면,  
+    이전에 노트북에서 수행했던 단계들과 대부분 동일하다는 것을 알 수 있습니다.  
+    다만 각 단계가 개별 함수로 분리되고,  
+    여러 파일로 구성되어 모듈성이 향상되었습니다.  
+    이를 통해 파이프라인을 더 쉽게 수정하고 유지보수할 수 있습니다.
 
     ![kfp.png](./images/kfp.png)
 
-2. Update the pipeline definition with the cluster domain as you did in the inner loop for Model Registry URL. Go to `jukebox/3-prod_datascience/prod_train_save_pipeline.py` and find the below line to replace the placeholder (somewhere around line 120). Make sure you save the file 👻
+2. 이너 루프에서 Model Registry URL을 설정했던 것과 마찬가지로,  
+   파이프라인 정의 파일에 클러스터 도메인을 업데이트합니다.  
+   `jukebox/3-prod_datascience/prod_train_save_pipeline.py` 파일을 열고  
+   아래 코드에서 플레이스홀더를 찾아 교체하세요  
+   (대략 120번째 줄 근처에 있습니다).  
+   수정 후 반드시 파일을 저장하세요 👻
 
     ```bash
         metadata = {
@@ -33,17 +61,20 @@ Now that you know what the pipeline is supposed to do, let's go ahead and run it
         },
         "model_name": "jukebox",
         "version": "0.0.2",
-        "cluster_domain": "<CLUSTER_DOMAIN>", # 👈 add your cluster domain here
+        "cluster_domain": "<CLUSTER_DOMAIN>", # 👈 여기에 클러스터 도메인을 입력하세요
         "model_storage_pvc": "jukebox-model-pvc",
         "prod_flag": False
     }
     ```
 
-2. As we mentioned, we are not supposed to trigger this pipeline manually but just to test the functionality and view the output, let's run it by clicking ▶️ on the file `prod_train_save_pipeline.py`
+2. 앞서 언급했듯이, 이 파이프라인은 원래 수동으로 실행하는 것이 목적은 아닙니다.  
+   하지만 기능을 테스트하고 출력 결과를 확인하기 위해,  
+   `prod_train_save_pipeline.py` 파일에서 ▶️ 버튼을 눌러 실행해 보겠습니다.
 
     ![kfp-run.png](./images/kfp-run.png)
 
-    You need to see an output like this in `Console Output`. It means that your pipeline was started successfully 🐍
+    `Console Output`에서 아래와 같은 출력이 보이면  
+    파이프라인이 성공적으로 시작된 것입니다 🐍
 
     ```bash
         Connecting to Data Science Pipelines: https://ds-pipeline-dspa.<USER_NAME>-jukebox.svc:8443
@@ -54,20 +85,29 @@ Now that you know what the pipeline is supposed to do, let's go ahead and run it
         <IPython.core.display.HTML object><IPython.core.display.HTML object>
     ```
 
-
-3. Go to OpenShift AI Dashboard. Select `Experiments` from the left menu and go to `Experiments and runs`. You'll see there is one run with the status `Running`. Click to see the details of the pipeline run.
+3. OpenShift AI Dashboard로 이동합니다.  
+   왼쪽 메뉴에서 `Experiments`를 선택한 뒤  
+   `Experiments and runs`로 이동하세요.  
+   상태가 `Running`인 실행 하나가 보일 것입니다.  
+   이를 클릭해 파이프라인 실행 상세 정보를 확인합니다.
 
     ![experiments.png](./images/experiments.png)
 
-    You'll be able to get many details such as:
+    여기서 다음과 같은 다양한 정보를 확인할 수 있습니다.
 
-    - the relationship between the steps
-    - the output of each step
-    - the artifacts that are generated
-    - the metrics and graphs 
+    - 각 단계 간의 관계
+    - 각 단계의 출력 결과
+    - 생성된 아티팩트
+    - 메트릭 및 그래프
 
     ![experiments-2.png](./images/experiments-2.png)
 
-    Take some time to explore this view and familiarize yourself with its features. The pipeline might take a while to finish on its first run, but you don’t need to wait for it to complete. Feel free to move on to the next steps!
+    이 화면을 충분히 살펴보며 기능에 익숙해지세요.  
+    첫 실행에서는 파이프라인이 완료되기까지 다소 시간이 걸릴 수 있지만,  
+    끝날 때까지 기다릴 필요는 없습니다.  
+    다음 단계로 바로 넘어가셔도 됩니다!
 
-4. The next step is to set up the MLOps environment, enabling this pipeline to run automatically and supporting many other MLOps practices. This is where our MLOps adventure starts! 🙌
+4. 다음 단계에서는 MLOps 환경을 설정하여,  
+   이 파이프라인이 자동으로 실행되도록 하고  
+   다양한 MLOps 실천 방법을 적용할 수 있도록 합니다.  
+   이제 본격적인 **MLOps 여정**이 시작됩니다! 🙌

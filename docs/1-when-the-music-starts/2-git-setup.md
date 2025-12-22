@@ -1,18 +1,20 @@
-## Verify Gitea Setup
+## Gitea 설정 확인
 
-Now let's check our repositories in Gitea. Spoiler alert: be on the watch out for GitOps 🦄🔥
+이제 Gitea에 생성된 저장소들을 확인해보겠습니다.  
+스포일러 하나 하자면, GitOps 🦄🔥 를 주의 깊게 살펴보세요.
 
-
-1. Go to Gitea [here](https://<GIT_SERVER>):
+1. 아래 링크를 통해 Gitea에 접속합니다.
 
     ```bash
     https://<GIT_SERVER>
     ```
 
-2. Use the same credentials to login.
+2. 앞서 사용했던 것과 동일한 계정 정보로 로그인합니다.
 
-3. Verify that there are three repositories waiting for 
+3. 앞으로의 실습을 위해 **3개의 저장소가 준비되어 있는지** 확인합니다.
 
     <p class="tip">
-    ⛷️ <b>TIP</b> ⛷️ - If your credentials are cached incorrectly, you can try clearing the cache using: <strong>git credential-cache exit</strong>
-    </p> 
+    ⛷️ <b>TIP</b> ⛷️ - 만약 자격 증명이 잘못 캐시되어 로그인 문제가 발생한다면,  
+    다음 명령어로 캐시를 초기화해볼 수 있습니다:  
+    <strong>git credential-cache exit</strong>
+    </p>

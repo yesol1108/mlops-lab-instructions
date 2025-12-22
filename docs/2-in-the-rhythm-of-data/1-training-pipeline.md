@@ -1,7 +1,17 @@
 ## Training Pipeline
 
-Pipelines help us to streamline the process of all the steps we did in the previous chapter (data preprocessing, model training, and evaluation), ensuring reproducibility, scalability, and efficient management of complex workflows.
+파이프라인은 이전 챕터에서 수행한 모든 단계(데이터 전처리, 모델 학습, 평가)를 하나의 흐름으로 정리해 주어,  
+재현성, 확장성, 그리고 복잡한 워크플로우의 효율적인 관리를 가능하게 합니다.
 
-Training pipelines are a foundational aspect of machine learning that enhance the workflow's efficiency, reliability, and scalability. They enable us to develop high-quality models quickly and effectively while ensuring that good practices are followed throughout the process. And especially when multiple steps and large datasets are involved, training pipelines reduce the potential for human error, save time, and enable data scientists to focus on model development rather than repetitive tasks.
+트레이닝 파이프라인은 머신러닝에서 매우 중요한 기반 요소로,  
+워크플로우의 효율성, 신뢰성, 확장성을 크게 향상시켜 줍니다.  
+이를 통해 우리는 모범 사례를 전체 과정에 걸쳐 일관되게 적용하면서도,  
+고품질의 모델을 빠르고 효과적으로 개발할 수 있습니다.  
 
-We have two powerful tools to build pipelines; Elyra and Kubeflow Pipelines (KFP). Let's get familiar with both!
+특히 여러 단계와 대규모 데이터셋이 포함된 경우,  
+트레이닝 파이프라인은 사람에 의한 실수를 줄이고, 시간을 절약하며,  
+데이터 사이언티스트가 반복적인 작업이 아닌 **모델 개발 자체에 집중**할 수 있도록 도와줍니다.
+
+우리는 파이프라인을 구축하기 위해 두 가지 강력한 도구를 사용할 것입니다.  
+바로 **Elyra**와 **Kubeflow Pipelines(KFP)** 입니다.  
+이제 이 두 가지 도구에 대해 하나씩 살펴보겠습니다!
