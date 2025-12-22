@@ -1,42 +1,39 @@
 # Feast
 
-## What is a Feature, and Why Does it Matter?
+## 피처란 무엇이며, 왜 중요한가?
 
-Features are measurable properties or characteristics of data that are used to train a model. In our case song attributes such as `danceability`, `energy`, and `valence` are important features that play a critical role to predict the likelihood of a song becoming a hit in which country.
+피처는 모델을 학습시키는 데 사용되는 데이터의 측정 가능한 속성 또는 특성입니다. 우리의 경우 `danceability`, `energy`, `valence`와 같은 노래 속성들이 중요한 피처로서, 특정 국가에서 노래가 히트할 가능성을 예측하는 데 중요한 역할을 합니다.
 
+## 피처 스토어란 무엇인가?
 
-## What is a Feature Store?
+`Feature Store`는 위와 같은 피처들을 중앙에서 관리하는 저장소입니다:
 
-A `Feature Store` is a centralized repository where features like those listed above are:
+- **관리:** 각 피처(예: danceability, tempo)는 일관되고 이해하기 쉬운 정의를 위해 엔지니어링, 버전 관리, 문서화됩니다.
+- **저장:** 피처는 모델 학습과 실시간 예측 모두에서 빠르게 접근할 수 있도록 저장됩니다.
+- **공유:** 히트곡 예측과 같은 한 프로젝트에서 생성된 피처는 국가별 트렌드 분석과 같은 다른 프로젝트에서 재사용할 수 있습니다.
 
-- **Managed:** Each feature (e.g., danceability, tempo) is engineered, versioned, and documented so that its definition is consistent and easy to understand.
-- **Stored:** Features are stored in a way that allows fast access during both model training and real-time predictions.
-- **Shared:** Features created for one project, such as predicting hit songs, can be reused in another project, like analyzing trends across countries.
-  
-  In the context of our dataset, a feature store ensures that features like `energy` and `speechiness` are consistent, up-to-date, and they look the same in both training and serving.
+우리 데이터셋의 맥락에서 피처 스토어는 `energy`와 `speechiness` 같은 피처들이 일관되고 최신 상태이며, 학습과 서빙 시 동일하게 보이도록 보장합니다.
 
+## Feast는 어떻게 작동하는가?
 
-## How does Feast work?
+Feast(**Fea**ture **St**ore, 멋진 이름이죠?✨)는 피처를 등록하고 추적하는 프레임워크로, 이 섹션에서 사용할 것입니다.
 
-Feast (**Fea**ture **St**ore, cool name right?✨) is a framework that registers and keeps track of features and that's what we are going to use in this section.
+Feast는 세 가지 구성 요소로 이루어져 있습니다:
+1. **오프라인 스토어:** 모델 학습에 사용되는 과거 피처 데이터를 장기 저장하는 시스템입니다.
+2. **레지스트리:** 모든 피처, 소스, 관련 엔티티를 정의하고 추적하는 중앙 메타데이터 저장소입니다.
+3. **온라인 스토어:** 모델 추론 시 실시간으로 피처를 제공하기 위해 최적화된 저지연 저장 시스템입니다.
 
-Feast has three components:
-1. **Offline Store:** A long-term storage system for historical feature data, used for training models.
-2. **Registry:** A centralized metadata store that defines and tracks all features, their sources, and associated entities in the feature store.
-3. **Online Store:** A low-latency storage system optimized for serving features in real-time during model inference.
+우리의 경우 단순화를 위해 `레지스트리`와 `온라인 스토어`를 동일한 데이터베이스에 저장할 것입니다.
 
-In our case the `Registry` and `Online Store` will be stored in the same database for simplicity.
+## 내부 루프에서 Feast 설정 및 사용하기
 
-## Setting Up and Using Feast in the Inner Loop  
+내부 루프에서 Feast를 사용하는 방법을 살펴보겠습니다:
 
-Let’s begin by exploring how to use Feast in the inner loop:  
-
-1. Navigate back to your Jupyter Notebook `<USER_NAME>-hitmusic-wb` workbench (Standard Data Science) and open the folder `7-feature_store`.  
-2. Inside this folder, locate the `feature_repo` directory. This is where the feature definitions are stored. Open the `features.py` file to review the features we’ve defined.  
-3. Next, open the notebook `1-setup_feast.ipynb` located in the `7-feature_store` folder and execute the cells step-by-step. Then continue with `2-test_load_historical_features.ipynb` and `3-test_load_online_features.ipynb`. This will set up Feast and demonstrate how it works in the inner loop.  
-4. After you go through the notebooks, you can check the features you define in the Feast UI we have set up for the development environment (you will get to deploy it yourself later 💪): [https://feast-ui-<USER_NAME>-jukebox.<CLUSTER_DOMAIN>](https://feast-ui-<USER_NAME>-jukebox.<CLUSTER_DOMAIN>). For example, if you go to `Feature Service` and click `serving_fs`, you'll see the feature definitions we store.
+1. Jupyter Notebook `<USER_NAME>-hitmusic-wb` 작업 공간(표준 데이터 사이언스)으로 돌아가서 `7-feature_store` 폴더를 엽니다.
+2. 이 폴더 내에서 `feature_repo` 디렉터리를 찾으세요. 이곳에 피처 정의가 저장되어 있습니다. `features.py` 파일을 열어 정의된 피처를 검토합니다.
+3. 다음으로 `7-feature_store` 폴더에 있는 `1-setup_feast.ipynb` 노트북을 열고 셀을 단계별로 실행하세요. 이어서 `2-test_load_historical_features.ipynb`와 `3-test_load_online_features.ipynb`를 실행합니다. 이를 통해 Feast를 설정하고 내부 루프에서의 작동 방식을 확인할 수 있습니다.
+4. 노트북을 모두 실행한 후, 개발 환경에 설정된 Feast UI에서 정의한 피처를 확인할 수 있습니다(나중에 직접 배포할 예정입니다 💪): [https://feast-ui-<USER_NAME>-jukebox.<CLUSTER_DOMAIN>](https://feast-ui-<USER_NAME>-jukebox.<CLUSTER_DOMAIN>). 예를 들어, `Feature Service`로 이동하여 `serving_fs`를 클릭하면 저장된 피처 정의를 볼 수 있습니다.
 
   ![feast-ui-innterloop.png](./images/feast-ui-innterloop.png)
 
-5. Once you’ve seen how Feast is used for inner loop tasks like feature exploration and training, we’ll move on to its role in the **outer loop**.  
-
+5. Feast가 피처 탐색과 학습 같은 내부 루프 작업에 어떻게 사용되는지 확인한 후, **외부 루프**에서의 역할로 넘어가겠습니다.

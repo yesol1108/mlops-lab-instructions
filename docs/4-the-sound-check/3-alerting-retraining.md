@@ -1,10 +1,10 @@
-## Alerting & Triggering Training Pipeline
+## 알림 및 트리거링 학습 파이프라인
 
-### Configure Alerts
+### 알림 구성
 
-In OpenShift's monitoring stack, we have Alert Manager that we can use to trigger alerts if some metrics are below or above in certain thresholds. For example, we just configured TrustyAI for data drift detection so naturally we would like to be notified when the data starts drifting. In order to do that we need to create a `PrometheusRule`.
+OpenShift의 모니터링 스택에는 특정 임계값을 초과하거나 미만일 때 알림을 트리거할 수 있는 Alert Manager가 있습니다. 예를 들어, 데이터 드리프트 감지를 위해 TrustyAI를 구성했으므로 데이터가 드리프트하기 시작할 때 알림을 받고 싶을 것입니다. 이를 위해 `PrometheusRule`을 생성해야 합니다.
 
-1. Create a `alerting` folder under `model-deployments/test` and `model-deployments/prod` as we want to monitor both. 
+1. `model-deployments/test`와 `model-deployments/prod` 아래에 `alerting` 폴더를 생성합니다. 두 환경 모두 모니터링하기 위함입니다.
 
     ```bash
     mkdir /opt/app-root/src/mlops-gitops/model-deployments/test/alerting
@@ -13,7 +13,7 @@ In OpenShift's monitoring stack, we have Alert Manager that we can use to trigge
     touch /opt/app-root/src/mlops-gitops/model-deployments/prod/alerting/config.yaml
     ```
 
-2. Paste the code snippet below into **both** `test/alerting/config.yaml` and `prod/alerting/config.yaml` files to inform Argo CD about the chart we want to deploy.
+2. 아래 코드 스니펫을 **test/alerting/config.yaml** 및 **prod/alerting/config.yaml** 파일 모두에 붙여넣어 Argo CD에 배포할 차트를 알립니다.
 
     ```yaml
     chart_path: charts/alerting
@@ -22,7 +22,7 @@ In OpenShift's monitoring stack, we have Alert Manager that we can use to trigge
     cluster_domain: <CLUSTER_DOMAIN>
     ```
 
-    This will create a `PrometheusRule` as below to monitor the shift in `danceability` feature in our `test` and `prod` environments.
+    이는 아래와 같이 `PrometheusRule`을 생성하여 `test` 및 `prod` 환경에서 `danceability` 특성의 변화를 모니터링합니다.
 
     <div class="highlight" style="background: #f7f7f7">
     <pre><code class="language-yaml">
@@ -46,7 +46,7 @@ In OpenShift's monitoring stack, we have Alert Manager that we can use to trigge
     </code></pre></div>
     
 
-3. Commit the changes to the repo as you’ve done before.
+3. 이전과 같이 변경 사항을 저장소에 커밋합니다.
 
     ```bash
     cd /opt/app-root/src/mlops-gitops
@@ -56,18 +56,18 @@ In OpenShift's monitoring stack, we have Alert Manager that we can use to trigge
     git push
     ```
 
-5. Let's go to OpenShift Console in Developer view, go to `Observe` > `Alerts` and view the alert we just created in `<USER_NAME>-test` project. It'll be in `Firing` state in a minute. If you are still not seeing a `Firing` state, make sure you executed the drift-introducing notebook in the previous chapter "TrustyAI".
+5. OpenShift 콘솔의 Developer 뷰로 이동하여 `Observe` > `Alerts`에서 방금 생성한 `<USER_NAME>-test` 프로젝트의 알림을 확인합니다. 잠시 후 `Firing` 상태가 됩니다. 아직 `Firing` 상태가 보이지 않는다면 이전 챕터 "TrustyAI"에서 드리프트를 유발하는 노트북을 실행했는지 확인하세요.
 
     ![alert-1.png](./images/alert-1.png)
 
 
-### Trigger Retraining Pipeline based on Alerts
+### 알림 기반 재학습 파이프라인 트리거
 
-Monitoring and receiving alerts about critical events like data drift or bias are important. However, alerting alone is not enough. To ensure models remain reliable and perform as expected, we need to act swiftly and effectively on these alerts.
+데이터 드리프트나 편향과 같은 중요한 이벤트를 모니터링하고 알림을 받는 것은 중요합니다. 하지만 알림만으로는 충분하지 않습니다. 모델이 신뢰성을 유지하고 기대한 성능을 발휘하도록 하려면 신속하고 효과적으로 대응해야 합니다.
 
-When a drift or other anomaly is detected, we can trigger an automated retraining pipeline to address the issue, a great strategy if you are able to train on fresh data coming in. Let's configure Alert Manager to trigger the pipeline.
+드리프트나 기타 이상이 감지되면 자동 재학습 파이프라인을 트리거하여 문제를 해결할 수 있습니다. 이는 새로 들어오는 데이터로 학습할 수 있는 경우 매우 효과적인 전략입니다. Alert Manager를 구성하여 파이프라인을 트리거해 보겠습니다.
 
-1. Create `Alertmanager Config` that knows the webhook URL of Tekton pipeline. Update `test/alerting/config.yaml` and `prod/alerting/config.yaml` as below to enable this configuration:
+1. Tekton 파이프라인의 웹훅 URL을 아는 `Alertmanager Config`를 생성합니다. `test/alerting/config.yaml`과 `prod/alerting/config.yaml`을 아래와 같이 업데이트하여 이 구성을 활성화합니다.
 
     ```yaml
     chart_path: charts/alerting
@@ -77,7 +77,7 @@ When a drift or other anomaly is detected, we can trigger an automated retrainin
     alert_manager: true # 👈 add this
     ```
 
-    This is to create an AlertManager config pointing the Tekton pipeline's webhook:
+    이는 Tekton 파이프라인의 웹훅을 가리키는 AlertManager 구성을 생성합니다.
 
     <div class="highlight" style="background: #f7f7f7">
     <pre><code class="language-yaml">
@@ -97,7 +97,7 @@ When a drift or other anomaly is detected, we can trigger an automated retrainin
     </code></pre></div>
 
 
-2. A trigger from an Alertmanager is very different from a trigger of Git repository. They send different types of payloads and different information to the webhook. Therefore we should also make some changes on our training pipeline. Open up `mlops-gitops/toolings/ct-pipeline/config.yaml` file and update it:
+2. Alertmanager의 트리거는 Git 저장소의 트리거와 매우 다릅니다. 서로 다른 유형의 페이로드와 정보를 웹훅에 전송하기 때문입니다. 따라서 학습 파이프라인에도 일부 변경이 필요합니다. `mlops-gitops/toolings/ct-pipeline/config.yaml` 파일을 열어 다음과 같이 업데이트합니다.
 
     ```yaml
     chart_path: charts/pipelines
@@ -107,7 +107,7 @@ When a drift or other anomaly is detected, we can trigger an automated retrainin
     alert_trigger: true # 👈 add this
     ```
 
-3. Commit the changes to the repo:
+3. 변경 사항을 저장소에 커밋합니다.
 
     ```bash
     cd /opt/app-root/src/mlops-gitops
@@ -116,10 +116,10 @@ When a drift or other anomaly is detected, we can trigger an automated retrainin
     git push
     ```
 
-4. Verify an alerting pipeline is triggered by going to `OpenShift Console` > `<USER_NAME>-toolings`> `Pipelines`
+4. `OpenShift Console` > `<USER_NAME>-toolings` > `Pipelines`로 이동하여 알림 파이프라인이 트리거되었는지 확인합니다.
 
     ![alert-pipeline.png](./images/alert-pipeline.png)
 
-    Once the pipeline finishes executing, you'll see a new version registered in the Model Registry due to data drift.
+    파이프라인 실행이 완료되면 데이터 드리프트로 인해 모델 레지스트리에 새 버전이 등록된 것을 확인할 수 있습니다.
 
     ![alert-model-registry.png](./images/alert-model-registry.png)

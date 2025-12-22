@@ -1,13 +1,13 @@
-# Dark Launches
+# 다크 런치
 
-A dark launch refers to the practice of deploying a new model or feature in production, but making it invisible or inactive for users. A copy of live traffic directed to the old model, is directed to the new model, providing a safe way to test and validate new changes at scale, without exposing them to end-users.
+다크 런치는 새로운 모델이나 기능을 프로덕션에 배포하되, 사용자에게는 보이지 않거나 비활성화된 상태로 두는 방식을 의미합니다. 기존 모델로 향하던 라이브 트래픽의 복사본을 새로운 모델로 보내어, 최종 사용자에게 노출하지 않고도 대규모로 새로운 변경 사항을 안전하게 테스트하고 검증할 수 있는 방법입니다.
 
-For machine learning systems, dark launches provide an opportunity to test new models in real-world conditions, monitor their performance, and compare them against the existing model. By routing traffic to both the old and new models without affecting the user experience, teams can ensure that the new model meets expectations before it goes live.
+머신러닝 시스템에서는 다크 런치를 통해 실제 환경에서 새로운 모델을 테스트하고, 성능을 모니터링하며, 기존 모델과 비교할 수 있는 기회를 제공합니다. 사용자 경험에 영향을 주지 않고 구 모델과 신 모델 모두에 트래픽을 라우팅함으로써, 신 모델이 라이브되기 전에 기대에 부합하는지 확인할 수 있습니다.
 
-This technique allows teams to:
+이 기법을 통해 팀은 다음을 수행할 수 있습니다:
 
-- Monitor how the new model performs with live traffic.
-- Gather insights from real-world data to improve the model further.
-- Ensure a smooth, risk-free transition when the new model is ready for production.
+- 라이브 트래픽에서 신 모델의 성능을 모니터링합니다.
+- 실제 데이터에서 인사이트를 수집하여 모델을 더욱 개선합니다.
+- 신 모델이 프로덕션에 적합할 때 원활하고 위험 없는 전환을 보장합니다.
 
-Dark launches rely on [Istio Traffic Mirroring](https://istio.io/latest/docs/tasks/traffic-management/mirroring/) capability under the hood. Currently, this is not supported with KServe but it is being worked on by the community. If this is something you are interested in, you can subscribe to [this GitHub Issue](https://github.com/kserve/kserve/issues/2240) to get the updates.
+다크 런치는 내부적으로 [Istio 트래픽 미러링](https://istio.io/latest/docs/tasks/traffic-management/mirroring/) 기능에 의존합니다. 현재 KServe에서는 이 기능을 지원하지 않지만, 커뮤니티에서 작업 중입니다. 관심이 있으시면 [이 GitHub 이슈](https://github.com/kserve/kserve/issues/2240)를 구독하여 업데이트를 받아보실 수 있습니다.

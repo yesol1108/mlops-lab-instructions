@@ -1,14 +1,14 @@
-# Advanced Deployments
+# 고급 배포
 
-## Blue/Green Deployments
+## 블루/그린 배포
 
-Blue/Green deployments are straightforward: you switch all traffic from one environment to another in a single step. This approach is ideal if you prioritize simplicity and prefer to avoid managing traffic splits, as required in Canary or A/B deployments. It is better suited for deployments where you need a clean cutover without prolonged monitoring periods.
+블루/그린 배포는 간단합니다: 모든 트래픽을 한 환경에서 다른 환경으로 한 번에 전환합니다. 이 접근법은 단순성을 우선시하고 Canary 또는 A/B 배포에서 요구되는 트래픽 분할 관리를 피하고자 할 때 이상적입니다. 장기간 모니터링 없이 깔끔한 전환이 필요한 배포에 더 적합합니다.
 
-Canary or A/B deployments are typically used for experiments to measure the effectiveness of different models based on user interactions. If your goal is not to experiment but to replace the old model with a new one in a controlled way, Blue-Green is a better fit.
+Canary 또는 A/B 배포는 일반적으로 사용자 상호작용을 기반으로 다양한 모델의 효과를 측정하는 실험에 사용됩니다. 실험이 목적이 아니라 기존 모델을 통제된 방식으로 새 모델로 교체하는 것이 목표라면 블루-그린 배포가 더 적합합니다.
 
-However, from an implementation point of view, for KServe, it's pretty similar with Canary deployments. It's just shifting the 100% of the traffic to the new revision of the model. Because KServe keeps each revision definition to provide you an easy rollback options. 
+그러나 구현 관점에서 보면, KServe에서는 Canary 배포와 매우 유사합니다. 단지 트래픽의 100%를 새 모델 리비전으로 전환하는 것입니다. KServe는 각 리비전 정의를 유지하여 쉽게 롤백할 수 있는 옵션을 제공합니다.
 
-1. If you update `trafficPercent` value as `100`, all the traffic will go to the latest version. Update `mlops-gitops/model-deployments/test/jukebox/config.yaml` on `<USER_NAME>-mlops-toolings` workbench (code-server).
+1. `trafficPercent` 값을 `100`으로 업데이트하면 모든 트래픽이 최신 버전으로 이동합니다. `<USER_NAME>-mlops-toolings` 워크벤치(code-server)에서 `mlops-gitops/model-deployments/test/jukebox/config.yaml`을 업데이트하세요.
 
     ```bash
     ---
@@ -21,7 +21,7 @@ However, from an implementation point of view, for KServe, it's pretty similar w
       trafficPercent: 100 # 👈 update this
     ```
 
-2. Let's push the change.
+2. 변경 사항을 푸시합니다.
 
     ```bash
     cd /opt/app-root/src/mlops-gitops
@@ -31,7 +31,7 @@ However, from an implementation point of view, for KServe, it's pretty similar w
     git push
     ```
 
-3. Verify that only one version is running now:
+3. 현재 하나의 버전만 실행 중인지 확인합니다:
 
     ```bash
     oc get isvc jukebox -n <USER_NAME>-test
@@ -42,9 +42,9 @@ However, from an implementation point of view, for KServe, it's pretty similar w
     jukebox   https://jukebox-<USER_NAME>-test.<CLUSTER_DOMAIN>   True    0     100       jukebox-predictor-00023   jukebox-predictor-00024   38h
     ```
 
-1. Let's check the same approach to verify that we only send traffic to the latest (green) version. Again, go back to Jupyter Notebook and run `jukebox/6-advanced_deployments/1-test_autoscale.ipynb`. Then, in `OpenShift Dashboard`, go to `Observe` > `Metrics` in `<USER_NAME>-test` namespace. Use the query below.
+4. 동일한 방법으로 최신(그린) 버전으로만 트래픽이 전송되는지 확인해 봅시다. 다시 Jupyter Notebook으로 돌아가 `jukebox/6-advanced_deployments/1-test_autoscale.ipynb`를 실행하세요. 그리고 `OpenShift Dashboard`에서 `<USER_NAME>-test` 네임스페이스의 `Observe` > `Metrics`로 이동합니다. 아래 쿼리를 사용하세요.
 
-  You should see the traffic is only being received by the latest revision.
+  최신 리비전만 트래픽을 받고 있는 것을 확인할 수 있습니다.
 
   ```bash
   sum(rate(ovms_requests_success[5m])) by (pod) 
@@ -52,7 +52,7 @@ However, from an implementation point of view, for KServe, it's pretty similar w
 
   ![bluegreen-metrics.png](./images/bluegreen-metrics.png)
 
-5. If you want to rollback to the previous version, update `trafficPercent` value as `0`.
+5. 이전 버전으로 롤백하려면 `trafficPercent` 값을 `0`으로 업데이트하세요.
 
     ```bash
     ---
@@ -65,8 +65,7 @@ However, from an implementation point of view, for KServe, it's pretty similar w
       trafficPercent: 0 # 👈 update this
     ```
 
-
-4. And push the change.
+6. 그리고 변경 사항을 푸시합니다.
 
     ```bash
     cd /opt/app-root/src/mlops-gitops
@@ -76,7 +75,7 @@ However, from an implementation point of view, for KServe, it's pretty similar w
     git push
     ```
 
-5. Observe that only the previous version now receives the traffic bu running the `locust` command:
+7. `locust` 명령어를 실행하여 현재 트래픽이 이전 버전만 받고 있는지 관찰하세요:
 
   ```bash
   oc get isvc jukebox -n <USER_NAME>-test
@@ -89,7 +88,7 @@ However, from an implementation point of view, for KServe, it's pretty similar w
     </code></pre>
     </div>
 
-6. Then, checking the metrics again in `OpenShift Dashboard`, go to `Observe` > `Metrics` in `<USER_NAME>-test` namespace. Use the query below.
+8. 다시 `OpenShift Dashboard`에서 `<USER_NAME>-test` 네임스페이스의 `Observe` > `Metrics`로 이동하여 아래 쿼리를 사용해 메트릭을 확인하세요.
 
   ```bash
   sum(rate(ovms_requests_success[5m])) by (pod) 
@@ -97,8 +96,7 @@ However, from an implementation point of view, for KServe, it's pretty similar w
 
   ![greenblue-metrics.png](./images/greenblue-metrics.png)
 
-
-7. With blue-green deployment, either way, there are two replicas of the model are running. The trade off here is that, blue-green requires maintaining duplicate environments, which can be resource-intensive. You can check it by running the below command on the terminal of your `<USER_NAME>-mlops-toolings` workbench (code-server).
+9. 블루-그린 배포에서는 두 개의 모델 복제본이 실행 중입니다. 여기서의 트레이드오프는 블루-그린이 중복 환경을 유지해야 하므로 리소스 소모가 클 수 있다는 점입니다. `<USER_NAME>-mlops-toolings` 워크벤치(code-server) 터미널에서 아래 명령어를 실행하여 확인할 수 있습니다.
 
     ```bash
     oc get po -l component=predictor -n <USER_NAME>-test

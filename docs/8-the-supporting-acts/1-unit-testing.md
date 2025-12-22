@@ -1,11 +1,11 @@
-# Unit Testing 
+# 단위 테스트
 
-Unit testing is a common practice in standard software development as it allows you to test components of your code individually to make sure each of them work as expected.  
-Maybe unsurprisingly, this is something we want to do in AI development as well, to make sure that all components that go into creating and evaluating our models function properly.  
+단위 테스트는 소프트웨어 개발에서 일반적으로 사용되는 방법으로, 코드의 각 구성 요소를 개별적으로 테스트하여 각각이 예상대로 작동하는지 확인할 수 있습니다.  
+놀랍지 않게도, AI 개발에서도 모델을 생성하고 평가하는 모든 구성 요소가 제대로 작동하는지 확인하기 위해 이 작업을 수행하고자 합니다.
 
-We have already set up a unit test for one of the pipeline components, let's try it out!
+우리는 이미 파이프라인 구성 요소 중 하나에 대한 단위 테스트를 설정했습니다. 한번 실행해 봅시다!
 
-1. Go to your code server workbench and on the terminal run the below code:
+1. 코드 서버 작업 공간에서 터미널을 열고 아래 코드를 실행하세요:
 
     ```bash
     cd /opt/app-root/src/
@@ -13,20 +13,19 @@ We have already set up a unit test for one of the pipeline components, let's try
     cd /opt/app-root/src/jukebox/3-prod_datascience
     pip install -r tests/requirements.txt
     PYTHONPATH=$(pwd) PYTHONDONTWRITEBYTECODE=1 pytest tests/test_fetch_data.py -p no:cacheprovider
-    ```
-    If you want to take a look at the code, you can find it in `jukebox/3-prod_datascience/tests/test_fetch_data.py`.  
-    Here we are testing if the data we load have the expected number and order of columns.  
-2. After a while (a couple of minutes), you should get an output similar to this:
+    ```  
+    코드를 살펴보고 싶다면 `jukebox/3-prod_datascience/tests/test_fetch_data.py`에서 확인할 수 있습니다.  
+    여기서는 로드한 데이터가 예상한 수와 순서의 컬럼을 가지고 있는지 테스트하고 있습니다.  
+2. 잠시 후(몇 분 정도) 다음과 유사한 출력이 나타납니다:  
     ![pytest-output](./images/pytest-output.png)  
-    Looks like we passed the check!
+    테스트를 통과한 것 같습니다!
 
+## 자동 단위 테스트
 
-## Automatic unit testing
+이제 연속 학습 파이프라인을 테스트할 수 있게 되었으니, 코드가 변경될 때마다 테스트가 자동으로 실행되도록 설정해 봅시다(좋은 소프트웨어 개발자처럼 🧑‍💻).  
+이를 위해, 단위 테스트를 학습 파이프라인에 추가하면 코드 변경 시마다 실행됩니다.
 
-Now that we are able to test our continuous training pipeline, let's make sure it gets tested each time we change our code (like good software developers 🧑‍💻).  
-To do that, we can simply add it to our training pipeline, which will be ran at any code change.  
-
-1. Go to `mlops-gitops/toolings/ct-pipeline/config.yaml` and add `unit_tests: true` to enable automatic testing:
+1. `mlops-gitops/toolings/ct-pipeline/config.yaml` 파일을 열고 `unit_tests: true`를 추가하여 자동 테스트를 활성화하세요:
 
     ```yaml
     chart_path: charts/pipelines
@@ -38,7 +37,7 @@ To do that, we can simply add it to our training pipeline, which will be ran at 
     unit_tests: true # 👈 add this
     ```
 
-2. Now we can push the change to git:
+2. 변경 사항을 git에 푸시합니다:
 
     ```bash
     cd /opt/app-root/src/mlops-gitops
@@ -48,11 +47,11 @@ To do that, we can simply add it to our training pipeline, which will be ran at 
     git push
     ```
 
-    If you go to the OpenShift Console > Pipelines in `<USER_NAME>-toolings` namespace, you should now see a task called `unit-tests` in your pipeline:
+    OpenShift 콘솔 > `<USER_NAME>-toolings` 네임스페이스의 Pipelines로 이동하면 파이프라인에 `unit-tests`라는 작업이 추가된 것을 확인할 수 있습니다:
 
     ![unit-test-task.png](./images/unit-test-task.png)
 
-3. If you wish, you can start a pipeline run through an empty commit to our Jukebox repo as below, to see that how unit test runs. However let's add some more exciting tests and checks to our pipeline before kick it!
+3. 원한다면, 아래와 같이 Jukebox 저장소에 빈 커밋을 푸시하여 파이프라인 실행을 시작하고 단위 테스트가 어떻게 실행되는지 확인할 수 있습니다. 하지만 본격적으로 파이프라인에 더 흥미로운 테스트와 검증을 추가해 봅시다!
 
     ```bash
     cd /opt/app-root/src/jukebox
@@ -60,6 +59,6 @@ To do that, we can simply add it to our training pipeline, which will be ran at 
     git push
     ```
 
-4. Observe the pipeline passes the `unit-tests` step this time 🥳
+4. 이번에는 파이프라인이 `unit-tests` 단계를 통과하는 것을 확인하세요 🥳
 
     ![unit-test-task.png](./images/unit-test-task-completed.png)

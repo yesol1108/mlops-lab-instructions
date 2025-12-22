@@ -1,17 +1,17 @@
-# Exercise 5 - The Data Tracks
->  Data versioning is the practice of keeping track of different versions of a dataset as it changes over time.
+# 연습문제 5 - 데이터 트랙
+> 데이터 버전 관리는 시간이 지남에 따라 변경되는 데이터셋의 다양한 버전을 추적하는 관행입니다.
 
-## 👨‍🍳 Exercise Intro
-In this exercise, we’ll enhance traceability by introducing versioning for our training data. We’ll build a scheduled ETL (Extract, Transform, Load) pipeline that versions the updated training data and pushes the data version information to the Jukebox repository. This action will automatically trigger the training pipeline to use the newly versioned data for model training.
+## 👨‍🍳 연습 소개
+이번 연습에서는 학습 데이터에 버전 관리를 도입하여 추적 가능성을 향상시킬 것입니다. 업데이트된 학습 데이터를 버전 관리하는 예약된 ETL(추출, 변환, 적재) 파이프라인을 구축하고, 데이터 버전 정보를 Jukebox 저장소에 푸시합니다. 이 작업은 자동으로 학습 파이프라인을 트리거하여 새로 버전 관리된 데이터를 모델 학습에 사용하게 합니다.
 
-## 🖼️ Big Picture
+## 🖼️ 큰 그림
 
 ![big-picture-dvc.jpg](./images/big-picture-dvc.jpg)
 
-## 🔮 Learning Outcomes
-- [ ] Use DVC to version the data 
-- [ ] Schedule a data pipeline
-- [ ] Update the training pipeline to use versioned data
+## 🔮 학습 목표
+- [ ] DVC를 사용하여 데이터 버전 관리하기
+- [ ] 데이터 파이프라인 예약하기
+- [ ] 버전 관리된 데이터를 사용하도록 학습 파이프라인 업데이트하기
 
-## 🔨 Tools used in this exercise
-* <span style="color:blue;">[DVC](https://dvc.org/)</span> - Manage and version data
+## 🔨 이 연습에서 사용하는 도구
+* <span style="color:blue;">[DVC](https://dvc.org/)</span> - 데이터 관리 및 버전 관리

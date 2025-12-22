@@ -7,22 +7,22 @@
   <a href="https://slides.com/"><img src="https://s3.amazonaws.com/static.slid.es/images/slides-github-banner-320x40.png?1" alt="Slides" width="160" height="20"></a>
 </p>
 
-reveal.js is an open source HTML presentation framework. It enables anyone with a web browser to create fully featured and beautiful presentations for free. [Check out the live demo](https://revealjs.com/).
+reveal.js는 오픈 소스 HTML 프레젠테이션 프레임워크입니다. 웹 브라우저만 있으면 누구나 완전한 기능과 아름다운 프레젠테이션을 무료로 만들 수 있습니다. [라이브 데모를 확인하세요](https://revealjs.com/).
 
-The framework comes with a broad range of features including [nested slides](https://revealjs.com/vertical-slides/), [Markdown support](https://revealjs.com/markdown/), [Auto-Animate](https://revealjs.com/auto-animate/), [PDF export](https://revealjs.com/pdf-export/), [speaker notes](https://revealjs.com/speaker-view/), [LaTeX support](https://revealjs.com/math/), [syntax highlighted code](https://revealjs.com/code/) and much more.
+이 프레임워크는 [중첩 슬라이드](https://revealjs.com/vertical-slides/), [Markdown 지원](https://revealjs.com/markdown/), [자동 애니메이트](https://revealjs.com/auto-animate/), [PDF 내보내기](https://revealjs.com/pdf-export/), [발표자 노트](https://revealjs.com/speaker-view/), [LaTeX 지원](https://revealjs.com/math/), [구문 강조 코드](https://revealjs.com/code/) 등 다양한 기능을 제공합니다.
 
 <h1>
-  <a href="https://revealjs.com/installation" style="font-size: 3em;">Get Started</a>
+  <a href="https://revealjs.com/installation" style="font-size: 3em;">시작하기</a>
 </h1>
 
-## Documentation
-The full reveal.js documentation is available at [revealjs.com](https://revealjs.com).
+## 문서
+전체 reveal.js 문서는 [revealjs.com](https://revealjs.com)에서 확인할 수 있습니다.
 
-## Online Editor
-Want to create your presentation using a visual editor? Try the official reveal.js presentation platform for free at [Slides.com](https://slides.com). It's made by the same people behind reveal.js.
+## 온라인 에디터
+시각적 에디터를 사용해 프레젠테이션을 만들고 싶으신가요? 공식 reveal.js 프레젠테이션 플랫폼인 [Slides.com](https://slides.com)을 무료로 사용해 보세요. reveal.js를 만든 동일한 팀이 제작했습니다.
 
-## License
+## 라이선스
 
-MIT licensed
+MIT 라이선스
 
-Copyright (C) 2011-2021 Hakim El Hattab, https://hakim.se
+저작권 (C) 2011-2021 Hakim El Hattab, https://hakim.se

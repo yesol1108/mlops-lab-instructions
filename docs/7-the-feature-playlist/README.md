@@ -1,17 +1,17 @@
-# Exercise 7 - The Feature Playlist
->  A Feature Store acts as a centralized repository for storing, processing, and serving machine learning features. It ensures that features are consistent, reusable, and efficiently retrieved for both training and real-time inference.
+# 연습문제 7 - 피처 플레이리스트
+> 피처 스토어는 머신러닝 피처를 저장, 처리 및 제공하기 위한 중앙 집중식 저장소 역할을 합니다. 이는 피처가 일관되고 재사용 가능하며, 학습과 실시간 추론 모두에 효율적으로 조회될 수 있도록 보장합니다.
 
-## 👨‍🍳 Exercise Intro
-In this exercise, we'll introduce the Feature Store concept both in the inner loop and the outer loop, and integrate it with our current MLOps workflow.
+## 👨‍🍳 연습문제 소개
+이번 연습에서는 내부 루프와 외부 루프 모두에서 피처 스토어 개념을 소개하고, 이를 현재 MLOps 워크플로우에 통합할 것입니다.
 
-## 🖼️ Big Picture
+## 🖼️ 큰 그림
 
 ![big-picture-feast.jpg](./images/big-picture-feast.jpg)
 
-## 🔮 Learning Outcomes
-- [ ] Use Feast in the inner loop
-- [ ] Introduce transformers using Feast in the outer loop
-- [ ] Automatically keep the features up to date
+## 🔮 학습 목표
+- [ ] 내부 루프에서 Feast 사용하기
+- [ ] 외부 루프에서 Feast를 사용한 변환기 도입하기
+- [ ] 피처를 자동으로 최신 상태로 유지하기
 
-## 🔨 Tools used in this exercise
-* <span style="color:blue;">[Feast](https://feast.dev/)</span> - A feature store to store and serve features consistently for offline training and online inference.
+## 🔨 이번 연습에서 사용하는 도구
+* <span style="color:blue;">[Feast](https://feast.dev/)</span> - 오프라인 학습과 온라인 추론을 위해 피처를 일관되게 저장하고 제공하는 피처 스토어입니다.

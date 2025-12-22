@@ -1,21 +1,21 @@
-# Exercise 1 - When the Music Starts
-> Let's start experimenting!
+# 연습 1 - 음악이 시작될 때
+> 실험을 시작해 봅시다!
 
-## 👨‍🍳 Exercise Intro
+## 👨‍🍳 연습 소개
 
-In this exercise, we will walk through a `Data Science Project` and familiarize ourselves with the necessary tools for the model we aim to build; we will create a workbench, explore the dataset and start experimenting.
+이번 연습에서는 `데이터 사이언스 프로젝트`를 단계별로 진행하며, 우리가 구축하려는 모델에 필요한 도구들을 익힐 것입니다. 작업 환경을 만들고, 데이터셋을 탐색하며 실험을 시작합니다.
 
-## 🖼️ Big Picture
+## 🖼️ 큰 그림
 
 ![empty-big-picture-empty](images/big-picture-empty.jpg)
 
-## 🔮 Learning Outcomes
+## 🔮 학습 목표
 
-- Get familiar with OpenShift AI and its components
-- Set up a workbench and start experimenting
+- OpenShift AI와 그 구성 요소에 익숙해지기
+- 작업 환경을 설정하고 실험 시작하기
 
-## 🔨 Tools Used in this Exercise
-* <span style="color:blue;">[Jupyter Notebook](https://jupyter.org/)</span> - A web-based interactive development environment for notebooks, code, and data 
-* <span style="color:blue;">[Minio](https://min.io/)</span> - Open Source object storage system 
-* <span style="color:blue;">[Kubeflow Model Registry](https://www.kubeflow.org/docs/components/model-registry/)</span> - Provides a central index for Machine Learning model metadata
-* <span style="color:blue;">[KServe](https://kserve.github.io/website/master/)</span> - A model inference platform on top of OpenShift
+## 🔨 이번 연습에서 사용하는 도구
+* <span style="color:blue;">[Jupyter Notebook](https://jupyter.org/)</span> - 노트북, 코드, 데이터를 위한 웹 기반 인터랙티브 개발 환경
+* <span style="color:blue;">[Minio](https://min.io/)</span> - 오픈 소스 객체 저장 시스템
+* <span style="color:blue;">[Kubeflow Model Registry](https://www.kubeflow.org/docs/components/model-registry/)</span> - 머신러닝 모델 메타데이터를 위한 중앙 인덱스 제공
+* <span style="color:blue;">[KServe](https://kserve.github.io/website/master/)</span> - OpenShift 위에 구축된 모델 추론 플랫폼

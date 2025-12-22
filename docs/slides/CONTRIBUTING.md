@@ -1,23 +1,23 @@
-## Contributing
+## 기여하기
 
-Please keep the [issue tracker](http://github.com/hakimel/reveal.js/issues) limited to **bug reports**, **feature requests** and **pull requests**.
-
-
-### Personal Support
-If you have personal support or setup questions the best place to ask those are [StackOverflow](http://stackoverflow.com/questions/tagged/reveal.js).
+[이슈 트래커](http://github.com/hakimel/reveal.js/issues)는 **버그 리포트**, **기능 요청**, **풀 리퀘스트**로 제한해 주시기 바랍니다.
 
 
-### Bug Reports
-When reporting a bug make sure to include information about which browser and operating system you are on as well as the necessary steps to reproduce the issue. If possible please include a link to a sample presentation where the bug can be tested.
+### 개인 지원
+개인적인 지원이나 설정 관련 질문은 [StackOverflow](http://stackoverflow.com/questions/tagged/reveal.js)에서 문의하는 것이 가장 좋습니다.
 
 
-### Pull Requests
-- Should follow the coding style of the file you work in, most importantly:
-  - Tabs to indent
-  - Single-quoted strings
-- Should be made towards the **dev branch**
-- Should be submitted from a feature/topic branch (not your master)
+### 버그 리포트
+버그를 보고할 때는 사용 중인 브라우저와 운영 체제 정보, 그리고 문제를 재현할 수 있는 필요한 단계들을 반드시 포함해 주세요. 가능하다면 버그를 테스트할 수 있는 샘플 프레젠테이션 링크도 포함해 주시기 바랍니다.
 
 
-### Plugins
-Please do not submit plugins as pull requests. They should be maintained in their own separate repository. More information here: https://github.com/hakimel/reveal.js/wiki/Plugin-Guidelines
+### 풀 리퀘스트
+- 작업하는 파일의 코딩 스타일을 따라야 하며, 특히:
+  - 들여쓰기는 탭 사용
+  - 문자열은 홑따옴표 사용
+- **dev 브랜치**를 대상으로 해야 합니다
+- 기능/주제 브랜치에서 제출해야 하며 (master 브랜치에서 제출하지 마세요)
+
+
+### 플러그인
+플러그인은 풀 리퀘스트로 제출하지 마십시오. 별도의 저장소에서 관리되어야 합니다. 자세한 내용은 다음을 참조하세요: https://github.com/hakimel/reveal.js/wiki/Plugin-Guidelines

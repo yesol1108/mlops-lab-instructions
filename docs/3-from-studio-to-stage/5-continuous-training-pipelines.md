@@ -1,34 +1,34 @@
-# Continuous Training Pipeline
+# 연속 학습 파이프라인
 
-In this exercise, we will set up OpenShift Pipelines (Tekton) to automatically trigger a Kubeflow Pipeline whenever there’s a push to the `jukebox` repository. The Kubeflow Pipeline will handle the model training, and once the model is ready, it will be deployed into a test environment for validation. To ensure traceability, the Tekton pipeline will update the model version information in the `mlops-gitops/model-deployments/test/jukebox` file in Git. This enables Argo CD to detect the change and manage the deployment update automatically.
+이 실습에서는 OpenShift Pipelines (Tekton)를 설정하여 `jukebox` 저장소에 푸시가 발생할 때마다 Kubeflow Pipeline이 자동으로 트리거되도록 합니다. Kubeflow Pipeline은 모델 학습을 처리하며, 모델이 준비되면 테스트 환경에 배포되어 검증을 진행합니다. 추적 가능성을 보장하기 위해 Tekton 파이프라인은 Git의 `mlops-gitops/model-deployments/test/jukebox` 파일에 모델 버전 정보를 업데이트합니다. 이를 통해 Argo CD가 변경 사항을 감지하고 배포 업데이트를 자동으로 관리할 수 있습니다.
 
 
-## Deploy Continuous Training Pipeline
+## 연속 학습 파이프라인 배포
 
-1. First, let's clone the Git repository that stores the Tekton pipeline definition. 
+1. 먼저, Tekton 파이프라인 정의를 저장한 Git 저장소를 클론합니다.
 
     ```bash
     cd /opt/app-root/src
     git clone https://<USER_NAME>:<PASSWORD>@<GIT_SERVER>/<USER_NAME>/mlops-helmcharts.git
     ```
 
-    After cloning the repository, go to the `mlops-helmcharts/charts/pipelines` folder from the left Explorer menu. Inside, you’ll see that we are calling the Kubeflow Pipeline (the one we ran manually in the previous chapter) from the `templates/tasks/execute-ds-pipeline.yaml` file.
+    저장소를 클론한 후, 왼쪽 탐색기 메뉴에서 `mlops-helmcharts/charts/pipelines` 폴더로 이동합니다. 내부에는 이전 장에서 수동으로 실행했던 Kubeflow Pipeline을 `templates/tasks/execute-ds-pipeline.yaml` 파일에서 호출하는 것을 확인할 수 있습니다.
 
-    Additionally, you will find several other steps that we will need to execute in the pipeline:
+    또한, 파이프라인에서 실행해야 할 여러 다른 단계들도 포함되어 있습니다:
 
     ![tekton-pipeline-overview.png](./images/tekton-pipeline-overview.png)
 
-2. We need to apply this Tekton pipeline definition to our `<USER_NAME>-toolings` environment. This will provide us with a webhook URL, which we’ll add as a trigger in our `Jukebox` repository. This setup will ensure that our pipeline runs whenever there’s a change in the model source code (and maybe for other updates too, but let’s keep that a surprise for now 🤭).
+2. 이 Tekton 파이프라인 정의를 `<USER_NAME>-toolings` 환경에 적용해야 합니다. 이렇게 하면 웹훅 URL이 제공되며, 이를 `Jukebox` 저장소의 트리거로 추가할 것입니다. 이 설정을 통해 모델 소스 코드에 변경이 있을 때마다 파이프라인이 실행되도록 할 수 있습니다 (다른 업데이트에도 작동할 수 있지만, 그건 일단 비밀로 해두죠 🤭).
 
-    Create `ct-pipeline` folder under `mlops-gitops/toolings/` and `config.yaml` file under this newly created folder. Or simply run the below commands.
-    `ct` here stands for Continuous Training :)
+    `mlops-gitops/toolings/` 아래에 `ct-pipeline` 폴더를 만들고, 새로 생성한 폴더 안에 `config.yaml` 파일을 생성하세요. 또는 아래 명령어를 실행해도 됩니다.  
+    여기서 `ct`는 Continuous Training의 약자입니다 :)
 
     ```bash
     mkdir /opt/app-root/src/mlops-gitops/toolings/ct-pipeline
     touch /opt/app-root/src/mlops-gitops/toolings/ct-pipeline/config.yaml
     ```
 
-3. Open up the `ct-pipeline/config.yaml` file and paste the below yaml to `config.yaml`. It contains the information, you know the drill by now:
+3. `ct-pipeline/config.yaml` 파일을 열고 아래 yaml 내용을 붙여넣으세요. 내용은 익숙하실 겁니다:
 
     ```yaml
     chart_path: charts/pipelines
@@ -36,7 +36,7 @@ In this exercise, we will set up OpenShift Pipelines (Tekton) to automatically t
     cluster_domain: <CLUSTER_DOMAIN>
     ```
 
-4. Again, this is GITOPS - so in order to affect change, we now need to commit things! Let's get the configuration into git, before telling Argo CD to sync the changes for us.
+4. 다시 말하지만, 이것은 GITOPS입니다 - 변경 사항을 적용하려면 이제 커밋을 해야 합니다! Argo CD가 변경 사항을 동기화하도록 하기 전에 구성을 git에 반영합시다.
 
     ```bash
     cd /opt/app-root/src/mlops-gitops
@@ -45,71 +45,71 @@ In this exercise, we will set up OpenShift Pipelines (Tekton) to automatically t
     git push
     ```
 
-    If you check from Argo CD, you'll see that the pipeline was popped up there already!
+    Argo CD에서 확인하면 파이프라인이 이미 나타난 것을 볼 수 있습니다!
 
     ![ct-pipeline.png](./images/ct-pipeline.png)
 
-    _Note: If you are seeing PVCs are still in Progressing status on Argo CD, it is because the OpenShift cluster is waiting for the first consumer, a.k.a. the first pipeline run, to create the Persistent Volumes. The sync status will be green after the first run._
+    _참고: Argo CD에서 PVC가 아직 Progressing 상태로 표시된다면, 이는 OpenShift 클러스터가 첫 번째 소비자, 즉 첫 번째 파이프라인 실행이 퍼시스턴트 볼륨을 생성하기를 기다리고 있기 때문입니다. 첫 실행 후 동기화 상태가 정상으로 바뀝니다._
 
     ![pvc-progressing.png](./images/pvc-progressing.png)
 
-5. Now, let's take the webhook and add it to the Jukebox repository. Run the below command and copy the webhook URL:
+5. 이제 웹훅을 가져와 Jukebox 저장소에 추가합시다. 아래 명령어를 실행하여 웹훅 URL을 복사하세요:
 
     ```bash
     echo https://$(oc -n <USER_NAME>-toolings get route el-ct-listener --template='{{ .spec.host }}')
     ```
 
-6. Once you have the URL, in Gitea go to `jukebox` repository > `Settings` > `Webhooks` , choose `Gitea` to add the webhook:
+6. URL을 복사한 후, Gitea에서 `jukebox` 저장소 > `Settings` > `Webhooks`로 이동하여 `Gitea`를 선택해 웹훅을 추가합니다:
 
     ![add-webhook.png](./images/add-webhook.png)
 
-    You can trigger the webhook by creating a commit on the Jukebox repository. Let's simulate that quickly!
-    Navigate back to Jukebox files by clicking `<> Code`.
-    
+    Jukebox 저장소에 커밋을 생성하여 웹훅을 트리거할 수 있습니다. 간단히 시뮬레이션해봅시다!  
+    `<> Code`를 클릭해 Jukebox 파일로 돌아갑니다.
+
     ![jukebox-gitea.png](./images/jukebox-gitea.png)
-    
-    Open up `README.md` file and click ✏ to edit.
-    
+
+    `README.md` 파일을 열고 ✏ 아이콘을 클릭해 편집합니다.
+
     ![jukebox-edit-readme.png](./images/jukebox-edit-readme.png)
-    
-    Just add a new row to the file and click on `Commit changes`:
+
+    파일에 새 줄을 추가하고 `Commit changes`를 클릭하세요:
+
     ![jukebox-empty-commit.png](./images/jukebox-empty-commit.png)
 
-8. This commit in turn triggers the pipeline! We will monitor the pipeline’s progress both from OpenShift Console `PipelineRuns` view and on OpenShift AI’s `Data Science Pipeline` > `Runs` view. (too many pipelines!🙈)
+8. 이 커밋이 파이프라인을 트리거합니다! OpenShift 콘솔의 `PipelineRuns` 뷰와 OpenShift AI의 `Data Science Pipeline` > `Runs` 뷰에서 파이프라인 진행 상황을 모니터링할 수 있습니다. (파이프라인이 너무 많네요!🙈)
 
-    First, go to `OpenShift Console` > `Pipelines` > `PipelineRuns` and click the `colorful bar` to see the logs.
+    먼저 `OpenShift Console` > `Pipelines` > `PipelineRuns`로 이동하여 `컬러 바`를 클릭해 로그를 확인하세요.
 
-    Make sure you are in `<USER_NAME>-toolings` project.
+    `<USER_NAME>-toolings` 프로젝트에 있는지 확인하세요.
 
     ![openshift-pipeline.png](./images/openshift-pipeline.png)
 
-    or you can use this link:
+    또는 아래 링크를 사용할 수 있습니다:
 
     ```bash
     https://console-openshift-console.<CLUSTER_DOMAIN>/pipelines/ns/<USER_NAME>-toolings/pipeline-runs
     ```
 
-    In the Tekton Pipeline run logs, you’ll notice that the Kubeflow Pipelines are triggered in the second step.
+    Tekton 파이프라인 실행 로그에서 두 번째 단계에서 Kubeflow Pipeline이 트리거되는 것을 확인할 수 있습니다.
 
     ![pipeline-running-state.png](./images/pipeline-running-state.png)
 
-    As soon as the Kubeflow pipeline has been triggered, you can go to the `OpenShift AI Dashboard` >  `Experiments` > `Experiments and Runs` and click the current run to see the details.
+    Kubeflow 파이프라인이 트리거되면 `OpenShift AI Dashboard` > `Experiments` > `Experiments and Runs`로 이동하여 현재 실행 중인 작업을 클릭해 세부 정보를 확인할 수 있습니다.
 
     ![openshift-ai-pipeline.png](./images/openshift-ai-pipeline.png)
 
-    The pipeline will build the model, containerize it, deploy it, and save the information to the Kubeflow Registry, just like we did manually in the Data Science inner loop!!
+    파이프라인은 모델을 빌드하고, 컨테이너화하며, 배포하고, Kubeflow Registry에 정보를 저장합니다. 이는 Data Science 내부 루프에서 수동으로 했던 작업과 동일합니다!!
 
-    The first run of this pipeline will take some time to complete. However, for subsequent runs, we’ll leverage Kubeflow Pipeline’s caching feature, which reuses results from previous steps when inputs haven’t changed. This significantly reduces processing time and speeds up the pipeline 🧚‍♂️🧚‍♂️
+    이 파이프라인의 첫 실행은 완료하는 데 시간이 걸립니다. 하지만 이후 실행부터는 Kubeflow Pipeline의 캐싱 기능을 활용하여 입력이 변경되지 않은 이전 단계의 결과를 재사용합니다. 이를 통해 처리 시간이 크게 단축되고 파이프라인 속도가 빨라집니다 🧚‍♂️🧚‍♂️
 
-9. After the pipeline has finished it should look something like this:
+9. 파이프라인이 완료되면 다음과 같은 화면을 볼 수 있습니다:
 
     ![pipeline-done.png](./images/pipeline-done.png)
 
-    And you can view the metadata added to your model from the pipeline by navigating to your Model Registry and View Metadata Details
-    
-    Go to Models -> Model Registry -> **select** <USER_NAME>-prod-registry -> jukebox -> <Model Version Link>.
+    파이프라인에서 모델에 추가한 메타데이터는 모델 레지스트리에서 확인할 수 있습니다.  
+    Models -> Model Registry -> **<USER_NAME>-prod-registry 선택** -> jukebox -> <모델 버전 링크>로 이동하세요.
 
     ![Model Metadata](./images/model-metadata-info.png)
 
-    And you should have a new deployment with your model in your `<USER_NAME>-test` namespace as well as a PR raised to your `mlops-gitops` repo 👏 More about the PR in the next section.  
-    ⚠️ Don't accept the PR yet ⚠️
+    또한 `<USER_NAME>-test` 네임스페이스에 모델이 포함된 새 배포가 생성되고, `mlops-gitops` 저장소에 PR이 생성됩니다 👏 PR에 대한 자세한 내용은 다음 섹션에서 다룹니다.  
+    ⚠️ 아직 PR을 승인하지 마세요 ⚠️

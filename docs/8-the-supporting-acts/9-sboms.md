@@ -1,21 +1,21 @@
-# Generate and Attest SBOM
+# SBOM 생성 및 증명
 
-> SBOM refers to the Software Bill of Materials. An SBOM reflects what is in a particular build. It provides transparency and visibility into the produced components of the software organizations market and use. Basically it's the list of components that software contains. It allows you to keep track of the security vulnerabilities of each component of the application to make sure everything is up-to-date and secure.
+> SBOM은 Software Bill of Materials(소프트웨어 자재 명세서)를 의미합니다. SBOM은 특정 빌드에 포함된 내용을 반영합니다. 이는 소프트웨어 조직이 시장에 내놓고 사용하는 구성 요소에 대한 투명성과 가시성을 제공합니다. 기본적으로 소프트웨어가 포함하는 구성 요소 목록입니다. 이를 통해 애플리케이션 각 구성 요소의 보안 취약점을 추적하여 모든 것이 최신 상태이고 안전한지 확인할 수 있습니다.
 
-SBOM doesn’t hold much value without an attestation or assurance that the code you received is the code that was released. An attestation is cryptographically-signed metadata used to verify the integrity of an event or artifact, known as a predicate. In this case, the SBOM is the predicate, and the attestation is the metadata that verifies the code within an SBOM. An attestation with an SBOM should be generated as part of the build process, to assure that the SBOM hasn’t been tampered with before being attached to an image. <a href="https://next.redhat.com/2022/10/27/establishing-a-secure-pipeline/"><sup>[1]</sup></a>
+SBOM은 수신한 코드가 실제로 릴리스된 코드임을 증명하거나 보증하는 증명이 없으면 큰 가치가 없습니다. 증명(attestation)은 프레디케이트(predicate)로 알려진 이벤트 또는 아티팩트의 무결성을 검증하는 데 사용되는 암호화 서명된 메타데이터입니다. 이 경우 SBOM이 프레디케이트이고, 증명은 SBOM 내 코드를 검증하는 메타데이터입니다. SBOM과 함께하는 증명은 빌드 프로세스의 일부로 생성되어야 하며, 이미지에 첨부되기 전에 SBOM이 변조되지 않았음을 보장합니다. <a href="https://next.redhat.com/2022/10/27/establishing-a-secure-pipeline/"><sup>[1]</sup></a>
 
-In this exercise, we'll use [Syft](https://github.com/anchore/syft) to generate SBOM. Then, we use `cosign` to attach the produced SBOM document to the image metadata and store the signature and certificate in  public [Rekor Server](https://rekor.sigstore.dev) transparency log _so please do not use any personal data🫣_ 
-
-
-## Before starting, generate your keys
+이번 실습에서는 [Syft](https://github.com/anchore/syft)를 사용해 SBOM을 생성합니다. 그 후 `cosign`을 사용해 생성된 SBOM 문서를 이미지 메타데이터에 첨부하고, 서명과 인증서를 공개 [Rekor Server](https://rekor.sigstore.dev) 투명성 로그에 저장합니다. _개인 정보를 사용하지 마세요🫣_
 
 
-1. Let's try and see what is an SBOM:
+## 시작 전에 키 생성하기
+
+
+1. SBOM이 무엇인지 확인해봅시다:
 
     ```bash
     syft quay.io/rhoai-mlops/jukebox:latest
     ```
-    You should get a long list output like this one:
+    다음과 같이 긴 목록 출력이 나와야 합니다:
     <div class="highlight" style="background: #f7f7f7">
     <pre><code class="language-bash">
     $ syft quay.io/rhoai-mlops/jukebox:latest
@@ -36,13 +36,13 @@ In this exercise, we'll use [Syft](https://github.com/anchore/syft) to generate 
     ....
     </code></pre></div>
 
-3. And `cosign` has an all-in-one command to list known security related artifacts of an image. If we want to check this image:
+3. `cosign`은 이미지의 알려진 보안 관련 아티팩트를 나열하는 올인원 명령어를 제공합니다. 이 이미지를 확인하려면:
 
     ```bash
     cosign tree quay.io/rhoai-mlops/jukebox:latest
     ```
 
-    We'll see that this image has no security related artifacts attached to it:
+    이 이미지는 보안 관련 아티팩트가 첨부되어 있지 않음을 확인할 수 있습니다:
     <div class="slider" style="background: #f7f7f7">
     <pre><code class="slide">
     <pre><code class="language-bash">
@@ -51,11 +51,11 @@ In this exercise, we'll use [Syft](https://github.com/anchore/syft) to generate 
     </pre></code>
     </code></pre></div>
 
-Now let's proceed to extend the pipelines with generate and attest SBOM step.
+이제 파이프라인에 SBOM 생성 및 증명 단계를 추가해 보겠습니다.
 
-_This step makes more sense when you use an external image registry and share images across clusters or publicly._
+_이 단계는 외부 이미지 레지스트리를 사용하거나 클러스터 간 또는 공개적으로 이미지를 공유할 때 더 의미가 있습니다._
 
-4. Let's open up `mlops-gitops/toolings/ct-pipeline/config.yaml` and add `generate_sboms: true` flag to introduce [the task](https://<GIT_SERVER>/<USER_NAME>/mlops-helmcharts/src/branch/main/charts/pipelines/templates/tasks/generate-sboms.yaml).
+4. `mlops-gitops/toolings/ct-pipeline/config.yaml` 파일을 열고 `generate_sboms: true` 플래그를 추가하여 [해당 작업](https://<GIT_SERVER>/<USER_NAME>/mlops-helmcharts/src/branch/main/charts/pipelines/templates/tasks/generate-sboms.yaml)을 도입합니다.
 
     ```yaml
     chart_path: charts/pipelines
@@ -74,7 +74,7 @@ _This step makes more sense when you use an external image registry and share im
     generate_sboms: true # 👈 add this
     ```
 
-5. Commit the changes to the repo:
+5. 변경 사항을 저장소에 커밋합니다:
 
     ```bash
     cd /opt/app-root/src/mlops-gitops
@@ -83,11 +83,11 @@ _This step makes more sense when you use an external image registry and share im
     git commit -m "🦤 ADD - generate SBOMs step 🦤"
     git push
     ```
-6. Go to OpenShift Console > Pipelines in `<USER_NAME>-toolings` namespace > verify that the task is included in the Pipeline.
+6. OpenShift 콘솔 > `<USER_NAME>-toolings` 네임스페이스의 Pipelines로 이동하여 작업이 파이프라인에 포함되었는지 확인합니다.
 
     ![sboms.png](./images/sboms.png)
 
-7. Kick off a pipeline with an empty commit to see the changes on the pipeline:
+7. 빈 커밋으로 파이프라인을 실행하여 변경 사항을 확인합니다:
 
     ```bash
     cd /opt/app-root/src/jukebox
@@ -95,11 +95,11 @@ _This step makes more sense when you use an external image registry and share im
     git push
     ```
 
-8. After the task successfully finish, go to `OpenShift UI` > `Builds` > `ImageStreams` and `jukebox`. You'll see a tag ending with `.sbom` and `.att` which shows you that an attestation for the SBOM predicate attached. With this, the SBOM is signed (and therefore tamper-proof) as it is within an attestation, and consumers can validate its authenticity.
+8. 작업이 성공적으로 완료되면 `OpenShift UI` > `Builds` > `ImageStreams` > `jukebox`로 이동합니다. `.sbom` 및 `.att`로 끝나는 태그가 보이며, 이는 SBOM 프레디케이트에 대한 증명이 첨부되었음을 나타냅니다. 이를 통해 SBOM은 증명 내에 서명되어(따라서 변조 방지) 소비자가 진위를 검증할 수 있습니다.
 
     ![sbomatt.png](./images/sbomatt.png)
 
-9. Let's verify the signed image with the public key. Make sure you use the right `VERSION` for the image. (`c6575637d8` in this case)
+9. 공개 키로 서명된 이미지를 검증해 봅시다. 이미지의 올바른 `VERSION`을 사용했는지 확인하세요. (이 경우 `c6575637d8`)
 
     ```bash
     export REGISTRY_AUTH_FILE=~/.docker/auth.json
@@ -107,7 +107,7 @@ _This step makes more sense when you use an external image registry and share im
     cosign tree default-route-openshift-image-registry.<CLUSTER_DOMAIN>/<USER_NAME>-test/jukebox:c6575637d8 
     ```
 
-    The output should be like:
+    출력 예시는 다음과 같습니다:
 
     <div class="slider" style="background: #f7f7f7">
     <pre><code class="slide">

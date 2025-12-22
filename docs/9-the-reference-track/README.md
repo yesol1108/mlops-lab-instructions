@@ -1,7 +1,7 @@
-# <del>Exercise</del> 9 - The Reference Track
-In this chapter, you will find references and useful materials to help you explore specific technologies in more depth or to refresh your understanding of key terms used in these exercises.
+# <del>연습문제</del> 9 - 참조 트랙
+이 장에서는 특정 기술을 더 깊이 탐구하거나 이 연습에서 사용된 주요 용어에 대한 이해를 새롭게 하는 데 도움이 되는 참고 자료와 유용한 자료를 제공합니다.
 
-This section contains:
-- [ ] A list of references for learning more about MLOps and related fields.
-- [ ] Documentations for the AI tools used to set up the MLOps system.
-- [ ] A glossary of common terms used throughout the exercises.
+이 섹션에는 다음이 포함되어 있습니다:
+- [ ] MLOps 및 관련 분야에 대해 더 배우기 위한 참고 문헌 목록.
+- [ ] MLOps 시스템 설정에 사용된 AI 도구들의 문서.
+- [ ] 연습 전반에 걸쳐 사용되는 일반 용어 사전.

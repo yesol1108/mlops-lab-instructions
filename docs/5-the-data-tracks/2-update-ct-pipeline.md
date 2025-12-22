@@ -1,12 +1,12 @@
-## Update Continuous Training Pipeline with Data Versioning
+## 데이터 버전 관리를 통한 지속적 학습 파이프라인 업데이트
 
-With data versioning in place, we can now enhance our pipeline to utilize the `dvc` version file. By integrating this version file, we can trigger the pipeline whenever the file is updated. This ensures that a new model is automatically built whenever new data becomes available, streamlining the model retraining process and maintaining consistency. 
+데이터 버전 관리가 도입됨에 따라, 이제 `dvc` 버전 파일을 활용하도록 파이프라인을 개선할 수 있습니다. 이 버전 파일을 통합하면 파일이 업데이트될 때마다 파이프라인이 자동으로 실행됩니다. 이를 통해 새로운 데이터가 제공될 때마다 자동으로 새로운 모델이 빌드되어 모델 재학습 프로세스가 간소화되고 일관성이 유지됩니다.
 
-And we have a bit of groundwork to cover first to set everything up properly.
+먼저 모든 설정을 올바르게 하기 위해 약간의 준비 작업이 필요합니다.
 
-### Setup MinIO
+### MinIO 설정
 
-1. We need to have `data` and `data-cache` buckets in our MLOps environment too. Previously, we were in inner loop, buckets were already there. But in MLOps environment we aim to practice GitOps as much as we can, so we store bucket info as code in Git too. Go back to your `<USER_NAME>-mlops-toolings` workbench (code-server) and update `mlops-gitops/toolings/minio/config.yaml` as below:
+1. MLOps 환경에도 `data`와 `data-cache` 버킷이 필요합니다. 이전에는 내부 루프에서 이미 버킷이 존재했지만, MLOps 환경에서는 가능한 한 GitOps를 실천하기 위해 버킷 정보를 코드로 Git에 저장합니다. `<USER_NAME>-mlops-toolings` 작업 공간(code-server)으로 돌아가서 `mlops-gitops/toolings/minio/config.yaml` 파일을 아래와 같이 업데이트하세요:
 
     ```bash
     chart_path: charts/minio
@@ -17,7 +17,7 @@ And we have a bit of groundwork to cover first to set everything up properly.
     - name: data-cache # 👈 add this
     ```
 
-2. Commit the changes to the repo as you’ve done before.
+2. 변경 사항을 이전과 같이 리포지토리에 커밋합니다.
 
     ```bash
     cd /opt/app-root/src/mlops-gitops
@@ -27,21 +27,20 @@ And we have a bit of groundwork to cover first to set everything up properly.
     git push
     ```
 
-### Update CT Pipeline
+### CT 파이프라인 업데이트
 
-1. Let's go back to Jupyter Notebook `<USER_NAME>-hitmusic-wb` workbench (Standard Data Science). Now that we got familiar with DVC, we can update our pipeline to stop fetching all the data from GitHub and fetch the song properties data based on the dvc file in `Jukebox` git repository.  For that, we need to comment out the initial `fetch_data()` function and introduce a new one that calls dvc commands.
-   
-    In your Jupyter Notebook `<USER_NAME>-hitmusic-wb` workbench (Standard Data Science), open `jukebox/3-prod_datascience/prod_train_save_pipeline.py`, and comment out below line by putting **＃** in front of it, or when you are on that line, hit CTRL (Command) + Shift. 
+1. Jupyter Notebook `<USER_NAME>-hitmusic-wb` 작업 공간(Standard Data Science)으로 돌아갑니다. 이제 DVC에 익숙해졌으니, 파이프라인을 업데이트하여 GitHub에서 모든 데이터를 가져오는 대신 `Jukebox` Git 리포지토리의 dvc 파일을 기반으로 노래 속성 데이터를 가져오도록 하겠습니다. 이를 위해 초기의 `fetch_data()` 함수를 주석 처리하고 dvc 명령어를 호출하는 새 함수를 도입해야 합니다.
+
+    Jupyter Notebook `<USER_NAME>-hitmusic-wb` 작업 공간(Standard Data Science)에서 `jukebox/3-prod_datascience/prod_train_save_pipeline.py` 파일을 열고, 아래 줄 앞에 **＃**를 붙여 주석 처리하거나 해당 줄에 커서를 두고 CTRL (Command) + Shift를 누르세요.
 
     <div class="highlight" style="background: #f7f7f7; overflow-x: auto; padding: 10px;">
     <pre><code class="language-python">
     def training_pipeline(hyperparameters: dict, model_name: str, version: str, cluster_domain: str, model_storage_pvc: str, prod_flag: bool):
         ### 🐶 Fetches Data from GitHub
-        fetch_task = fetch_data() # 👈 Comment out this one
+        fetch_task = fetch_data() # 👈 이 줄을 주석 처리하세요
     </code></pre></div>
 
-
-2. After you comment out `fetch_data()`, paste the below function right under `### 🍇 Fetches data from DVC` comment. And make sure you save the file!
+2. `fetch_data()`를 주석 처리한 후, `### 🍇 Fetches data from DVC` 주석 바로 아래에 아래 함수를 붙여넣고 파일을 저장하세요!
 
     ```python
         ### 🍇 Fetches data from DVC
@@ -75,11 +74,11 @@ And we have a bit of groundwork to cover first to set everything up properly.
         )
     ```
 
-3. Let's persist the changes in Git. On Jupyter Notebook, in `Launcher`, select `Terminal`:
+3. 변경 사항을 Git에 반영합시다. Jupyter Notebook에서 `Launcher`를 열고 `Terminal`을 선택하세요:
 
    ![open-terminal.png](./images/open-terminal.png)
 
-   ..and run the below commands.
+   그리고 아래 명령어를 실행하세요.
 
     ```bash
     cd /opt/app-root/src/jukebox/
@@ -89,48 +88,47 @@ And we have a bit of groundwork to cover first to set everything up properly.
     git push
     ```
 
-4. This push triggers our training pipeline, however, the pipeline will fail. Any guesses why? Yes! Previously, we actually haven't pushed any dvc config file to `Jukebox` repository, so during the fetch data step, pipeline will fail. But we don't want to commit the dvc files manually every time there is a change in our data. We want to automate this as well. Therefore, we need to introduce yet another pipeline.
+4. 이 푸시는 학습 파이프라인을 트리거하지만, 파이프라인은 실패할 것입니다. 이유가 무엇일까요? 맞습니다! 이전에는 `Jukebox` 리포지토리에 dvc 설정 파일을 푸시하지 않았기 때문에 데이터 가져오기 단계에서 파이프라인이 실패합니다. 하지만 데이터가 변경될 때마다 dvc 파일을 수동으로 커밋하고 싶지 않습니다. 이를 자동화해야 하므로 또 다른 파이프라인을 도입해야 합니다.
 
+### DVC 버전 관리를 활용한 데이터 파이프라인
 
-### Data Pipeline with DVC Versioning
+1. Jupyter Notebook `<USER_NAME>-hitmusic-wb` 작업 공간(Standard Data Science)에서 `5-data-versioning/4-data_pipeline_with_dvc_versioning.py` 파일을 열고 ▶️ 버튼을 클릭하여 실행하세요.
 
-1. In your Jupyter Notebook `<USER_NAME>-hitmusic-wb` workbench (Standard Data Science), open up `5-data-versioning/4-data_pipeline_with_dvc_versioning.py` file and run this by clicking ▶️ button.
+    이번에는 파이프라인이 실행되는 대신 파이프라인 명세가 담긴 YAML 파일이 생성됩니다. `5-data-versioning/` 폴더에서 새로고침 버튼을 누르면 `song-properties-etl.yaml` 파일이 보일 것입니다.
 
-    This time, instead of triggering a pipeline, it created a YAML file containing the pipeline spec. If are in `5-data-versioning/` and refresh it by hitting Refresh button, you should see `song-properties-etl.yaml`
-
-    Let's download this file locally. 
+    이 파일을 로컬로 다운로드하세요.
 
     ![data-pipeline-download.gif](./images/data-pipeline-download.gif)
 
-2. In OpenShift AI Dashboard, go to `Data science pipelines` > `Pipelines`, select `<USER_NAME>-toolings` as the project, and click `Import pipeline`. 
+2. OpenShift AI 대시보드에서 `Data science pipelines` > `Pipelines`로 이동한 후, 프로젝트를 `<USER_NAME>-toolings`으로 선택하고 `Import pipeline`을 클릭하세요.
 
     ![import-pipeline-1.png](./images/import-pipeline-1.png)
 
-3. Use `data-pipeline-with-dvc` as Pipeline name and upload the YAML file you just downloaded to your local by clicking `Upload` button. Then `Import pipeline`. 
+3. 파이프라인 이름을 `data-pipeline-with-dvc`로 지정하고, 방금 로컬에 다운로드한 YAML 파일을 `Upload` 버튼을 눌러 업로드한 후 `Import pipeline`을 클릭하세요.
 
     ![import-pipeline-2.png](./images/import-pipeline-2.png)
 
-   This pipeline automates the tasks you completed in the previous section during the inner loop: fetching data, configuring DVC, storing data in S3, and versioning the song properties data, PLUS one more step. It will take the DVC version file and commit it to the `Jukebox` repository.
+   이 파이프라인은 이전 섹션에서 내부 루프 동안 수행했던 작업들을 자동화합니다: 데이터 가져오기, DVC 구성, S3에 데이터 저장, 노래 속성 데이터 버전 관리, 그리고 한 가지 추가 단계가 있습니다. 바로 DVC 버전 파일을 `Jukebox` 리포지토리에 커밋하는 것입니다.
 
     ![data-pipeline-steps.png](./images/data-pipeline-steps.png)
 
-    And what this commit will do? Yes, it will trigger the Continuous Training pipeline 🎉
+    이 커밋은 무엇을 할까요? 맞습니다, 지속적 학습 파이프라인을 트리거합니다 🎉
 
-4. Ideally, you’d want to set up this data pipeline to run periodically. This way, whenever fresh data becomes available, the pipeline can process it, transform it, version it, and retrain the model using the updated data. Let’s see how to set this up.
+4. 이상적으로는 이 데이터 파이프라인을 주기적으로 실행되도록 설정하는 것이 좋습니다. 이렇게 하면 새로운 데이터가 제공될 때마다 파이프라인이 데이터를 처리, 변환, 버전 관리하고 업데이트된 데이터를 사용해 모델을 재학습할 수 있습니다. 설정 방법을 살펴봅시다.
 
-    While you are in `data-pipeline-with-dvc` view, click `Action` from upper right corner, and select `Create schedule`.
+    `data-pipeline-with-dvc` 뷰에 있는 상태에서 오른쪽 상단의 `Action`을 클릭하고 `Create schedule`을 선택하세요.
 
     ![schedule-run-1.png](./images/schedule-run-1.png)
 
-    For **Schedule details:**
+    **스케줄 세부사항:**
 
-    - name: `data-pipeline-with-dvc-daily`
-    - Trigger type: `Periodic`
-    - Run every `1 Day`
-  
-    Leave the rest as default until `Parameters` section.
+    - 이름: `data-pipeline-with-dvc-daily`
+    - 트리거 유형: `Periodic`
+    - 실행 주기: `1 Day`
 
-    For **Parameters:**
+    나머지는 기본값으로 두고 `Parameters` 섹션으로 이동하세요.
+
+    **파라미터:**
 
     - dataset_url:
 
@@ -144,19 +142,19 @@ And we have a bit of groundwork to cover first to set everything up properly.
       https://gitea-gitea.<CLUSTER_DOMAIN>/<USER_NAME>/jukebox.git
       ```
 
-    ..and hit `Create schedule`.
+    ..그리고 `Create schedule`을 클릭하세요.
 
-5. You can see this scheduled runs under `Experiments` > `Experiment and runs` > `Default` > `Schedules`
+5. 예약된 실행은 `Experiments` > `Experiment and runs` > `Default` > `Schedules`에서 확인할 수 있습니다.
 
     ![view-scheduled-runs.png](./images/view-scheduled-runs.png)
 
-6. But let's not wait for it to run. Just like we scheduled, we can also create an ad-hoc run. Go back to `Data science pipelines` > `Pipelines` > `data-pipeline-with-dvc` and click `Actions` on the upper right corner again, and select `Create run`.
+6. 하지만 실행을 기다리지 말고 즉시 실행할 수도 있습니다. `Data science pipelines` > `Pipelines` > `data-pipeline-with-dvc`로 돌아가 오른쪽 상단의 `Actions`를 다시 클릭하고 `Create run`을 선택하세요.
 
     ![create-run.png](./images/create-run.png)
 
-    Again, the similar information:
+    비슷한 정보를 입력합니다:
 
-    - Name: `data-pipeline-with-dvc-adhoc-run`
+    - 이름: `data-pipeline-with-dvc-adhoc-run`
     - dataset_url:
 
       ```
@@ -169,24 +167,22 @@ And we have a bit of groundwork to cover first to set everything up properly.
       https://gitea-gitea.<CLUSTER_DOMAIN>/<USER_NAME>/jukebox.git
       ```
 
-    ..and hit `Create run`. The pipeline will start running immediately.
+    ..그리고 `Create run`을 클릭하세요. 파이프라인이 즉시 실행됩니다.
 
     ![create-run-2.png](./images/create-run-2.png)
 
-
-7. When the pipeline finished, check `Jukebox` git repository. You should be able to see a `.dvc/config` folder and a `song_properties.parquet.dvc` file. 
+7. 파이프라인이 완료되면 `Jukebox` Git 리포지토리를 확인하세요. `.dvc/config` 폴더와 `song_properties.parquet.dvc` 파일이 생성되어 있을 것입니다.
 
     ![gitea-dvc.png](./images/gitea-dvc.png)
 
-    DVC files were pushed by the data pipeline, which means Continuous Training Pipeline must have been triggered. Let's check the OpenShift pipeline.
+    DVC 파일이 데이터 파이프라인에 의해 푸시되었으므로, 지속적 학습 파이프라인이 트리거되었음이 확실합니다. OpenShift 파이프라인을 확인해봅시다.
 
-    Go to OpenShift Console > Pipelines > `ct-pipeline`
+    OpenShift 콘솔 > Pipelines > `ct-pipeline`으로 이동하세요.
 
     ![pipeline-run-dvc.png](./images/pipeline-run-dvc.png)
 
-    Now apart from code change and alerts, the pipeline gets triggered when there is fresh data!
+    이제 코드 변경 및 알림 외에도 새로운 데이터가 있을 때마다 파이프라인이 실행됩니다!
 
-8.  Check Model Registry, you now have dvc config there as well as which version of the data was used to build this version of the Machine Learning model.
+8. 모델 레지스트리를 확인하면, dvc 구성과 이 버전의 머신러닝 모델을 빌드하는 데 사용된 데이터 버전을 확인할 수 있습니다.
 
     ![dvc-model-registry.png](./images/dvc-model-registry.png)
-
