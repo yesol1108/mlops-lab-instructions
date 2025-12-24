@@ -33,7 +33,7 @@ Elyra는 빠른 프로토타이핑과 실험을 지원하며,
    (원하신다면 자유롭게 다른 코드를 작성해도 됩니다 :D)
 
     ```python
-    print("Pipeline has finished successfully! Yayy!! ✨")
+    print("파이프 라인 실행이 성공적으로 완료되었습니다! 야호!! ✨")
     ```
 
     `Save` 버튼을 누르거나 `CTRL + S`로 저장한 뒤,  
